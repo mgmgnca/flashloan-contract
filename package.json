@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "node": "npx hardhat node --fork https://polygon-mainnet.g.alchemy.com/v2/EBtkjz43U_zCbSqCAPteyKYTNSfoVnBu",
+    "test": "npx hardhat test tests/index.test.ts",
+    "compile": "npx hardhat compile"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^4.2.0",
+    "hardhat": "^2.22.4"
+  }
+}
