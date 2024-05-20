@@ -1,10 +1,11 @@
+import hh from 'hardhat';
 import { ethers } from "ethers";
 import flashLoanAbi from '../artifacts/contracts/FlashLoan.sol/Flashloan.json'
 import { FlashLoanParams } from "../types";
 
 export async function executeFlashloan(params: FlashLoanParams) {
     
-    const Flashloan: any = new ethers.Contract(params.flashLoanContractAddress, flashLoanAbi.abi, params.singer);
+    const Flashloan: any = new hh.ethers.Contract(params.flashLoanContractAddress, flashLoanAbi.abi, params.singer);
 
     const tx = await Flashloan.executeFlashloan(
         {

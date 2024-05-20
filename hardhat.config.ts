@@ -21,15 +21,23 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: 'https://polygon-mainnet.g.alchemy.com/v2/EBtkjz43U_zCbSqCAPteyKYTNSfoVnBu'
+        url: 'https://polygon-mainnet.g.alchemy.com/v2/EBtkjz43U_zCbSqCAPteyKYTNSfoVnBu',
         // polygon
         // url: 'https://rpc.ankr.com/polygon',
-        // blockNumber: 28583600,
+        blockNumber: 57170670,
 
         // bsc
         // url: process.env.BSC_RPC_URL,
         // blockNumber: 17988430,
       },
+      chains: {
+        137: {
+          hardforkHistory: {
+            london: 23850000
+          }
+        }
+      }
+
     },
     localhost: {
       url: 'http://localhost:8545',

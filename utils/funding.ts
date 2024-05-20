@@ -1,55 +1,56 @@
 import { network, ethers } from 'hardhat';
 import { FundingParams } from '../types';
-import { Contract } from 'ethers';
 
 export const fundErc20 = async (fundingParams: FundingParams) => {
   const { sender, tokenContract, amount, decimals, recipient } = fundingParams;
-  const FUND_AMOUNT = ethers.parseUnits(amount, decimals);
 
-  // fund erc20 token to the contract
-  const MrWhale = await ethers.getSigner(sender);
+  // const signer = await ethers.getSigner(sender);
+  // const add = await signer.getAddress();
+  // const bal = await ethers.provider.getBalance(add);
+  // // console.log("signer.getAddress()",bal);
 
-  // const contractSigner = tokenContract.connect(MrWhale);
-  // console.log("contractSigner:", contractSigner);
-  // await contractSigner.transfer(recipient, FUND_AMOUNT);
+  // // Define and parse token amount. Each token has 18 decimal places. In this example we will send 1 LINK token
+  // // const FUND_AMOUNT = ethers.parseUnits(amount, decimals);
 
-  await MrWhale.sendTransaction({
-    to: recipient,
-    value: FUND_AMOUNT, // Sends exactly 1.0 ether
-  });
+  // //   create  transaction
+  // const data = tokenContract.interface.encodeFunctionData("transfer", [recipient, ethers.parseEther("0.01")] )
+
+  // const recieptTx = await signer.sendTransaction({
+  //   to: ethers.getAddress(recipient),
+  //   value: ethers.parseUnits('0.001', 'ether'),
+  //   data: data,
+  // });
+
+  // await recieptTx.wait();
+
+
+  // //Define the data parameter
+  // const data = tokenContract.interface.encodeFunctionData("transfer", [recipient, FUND_AMOUNT] )
+
+
+  // // // Creating and sending the transaction object
+  // // const tx = await signer.sendTransaction({
+  // //   to: tokenContract,
+  //   from: sender,
+  //   value: ethers.parseUnits("0.000", "ether"),
+  //   data: data  
+  // });
+
+  // console.log(`Mining transaction...${tx.hash}`);
+
+  // // Waiting for the transaction to be mined
+  // const receipt = await tx.wait();
+
+  // // The transaction is now on chain!
+  // console.log(`Mined in block ${receipt!.blockNumber}`);
 
 }
 
 
 export const impersonateFundERC20 = async (fundingParams: FundingParams) => {
-  await network.provider.request({
-    method: "hardhat_impersonateAccount",
-    params: [fundingParams.sender],
-  });
+  const impersonatedSigner = await ethers.getImpersonatedSigner(fundingParams.sender);
 
-  // fund baseToken to the contract
-  // await fundErc20(fundingParams);
-  let bal = await ethers.provider.getBalance(fundingParams.sender)
+  await fundErc20(fundingParams)
 
-  // console.log("acc0 bal:", bal.toString());
-
-
-  const signer = await ethers.getSigner(fundingParams.sender)
-  await signer.sendTransaction({
-    to: fundingParams.recipient,
-    value: ethers.parseEther(fundingParams.amount), // Sends exactly 1.0 ether
-    gasLimit: 3_000_000
-  })
-  
-  await network.provider.request({
-    method: "hardhat_stopImpersonatingAccount",
-    params: [fundingParams.sender],
-  });
-
-  let bal2 = await ethers.provider.getBalance(fundingParams.recipient)
-        const balance = await fundingParams.tokenContract.balanceOf(fundingParams.recipient);
-
-  console.log("acc0 bal2:", bal2.toString(),"|", balance);
-
-
+  await ethers.getImpersonatedSigner(fundingParams.sender);
 }

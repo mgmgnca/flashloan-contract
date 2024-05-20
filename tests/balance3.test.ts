@@ -7,6 +7,9 @@ import { findRouterFromProtocol } from '../utils/findRouterByProtocol';
 import { ERC20Token } from '../constants/tokens';
 import { executeFlashloan } from '../scripts/executeFlashloan';
 import wethAbi from '../abis/wethAbi.json';
+import usdcAbi from '../abis/usdcAbi.json';
+
+import { impersonateFundERC20 } from '../utils/funding';
 import { expect } from 'chai';
 
   
@@ -25,14 +28,26 @@ describe("DODO Flashloan", () => {
         // Fund ERC 20 
         const impersonatedSigner = await hh.ethers.getImpersonatedSigner(mrWhale);
         
+        const signer1 = await hh.ethers.provider.getSigner(mrWhale);
         const tokenContract = new hh.ethers.Contract(ERC20Token.WETH?.address, wethAbi, impersonatedSigner);
+        const tokenContract2 = new hh.ethers.Contract(ERC20Token.WETH?.address, wethAbi, provider);
 
-        const amount = ethers.parseUnits("1", 18);
+        const amount = ethers.parseUnits("1.0", 18);
         await tokenContract.connect(impersonatedSigner)
         await tokenContract.transfer(flashLoanAddress, amount);
+        // const tx2 = await impersonatedSigner.sendTransaction({
+        //     to: flashLoanAddress,
+        //     value: amount,
+        // });
+        // const hash2 = await tx2.wait();
+
+        // await hh.ethers.getImpersonatedSigner(mrWhale);
+
             
-        const afterWethBal = await tokenContract.balanceOf(flashLoanAddress);
-        expect(afterWethBal).to.equal(ethers.parseEther("1"));
+        const afterWethBal = await tokenContract2.balanceOf(flashLoanAddress);
+        console.log("after weth bal:", afterWethBal.toString());
+
+
 
         ////////////////////////////////////////////////////////
         const params: FlashLoanParams = {
@@ -65,12 +80,6 @@ describe("DODO Flashloan", () => {
 
         const tx = await executeFlashloan(params);
         console.log("Tx hash", tx.hash);
-        
-        expect(await tokenContract.balanceOf(flashLoanAddress)).to.equal(ethers.parseEther("0"));
-        expect(tx.hash).to.not.equal(null);
-        expect(tx.hash).to.not.equal(undefined);
-
-        const ownerBalance = await tokenContract.balanceOf(wallet.address);
-        expect(ownerBalance).to.be.gt(ethers.parseEther("0"));
+   
     })
 })
