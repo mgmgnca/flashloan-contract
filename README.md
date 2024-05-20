@@ -13,6 +13,6 @@ npx hardhat ignition deploy ./ignition/modules/Lock.ts
 ```
 ```shell
 npx hardhat node --fork https://polygon-mainnet.g.alchemy.com/v2/EBtkjz43U_zCbSqCAPteyKYTNSfoVnBu  --fork-block-number 28583600
-npx hardhat test .\test\index.test.ts  
+npx hardhat test .\test\index.test.ts  --network localhost
 ```
 
